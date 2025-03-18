@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {{#if this.contactos}}
+    <link rel="stylesheet" href="./css/contactos.css">
+    {{/if}}
+
+    {{#if this.registro}}
+    <link rel="stylesheet" href="/css/registro.css">
+    {{/if}}
+
+    {{#if this.formEmail}}
+    <link rel="stylesheet" href="/css/formEmail.css">
+    {{/if}}
+
+        {{#if this.cambio}}
+    <link rel="stylesheet" href="/css/contraseñas.css">
+    {{/if}}
+
+    {{#if this.chat}}
+    <link rel="stylesheet" href="./css/chat2.css">
+    {{/if}}
+    {{#if this.login}}
+    <link rel="stylesheet" href="./css/login.css">
+    {{/if}}
+    <title>{{this.titulo}}</title>
+</head>
+
+<body>
+    {{#if noNav }}
+
+    {{else}}
+    {{>nav}}
+    {{/if}}
+    {{{body}}}
+
+    <script src="https://kit.fontawesome.com/12d8f1eee3.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

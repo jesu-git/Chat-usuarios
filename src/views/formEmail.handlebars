@@ -1,0 +1,16 @@
+<div class="form-container">
+
+  {{#if mensaje}}
+  <div style="color: green;">{{mensaje}}</div>
+  {{/if}}
+  {{#if error}}
+  <div style="color: red;">{{error}}</div>
+  {{/if}}
+
+  <form id="email-form" action="/api/password/checkEmail" method="post">
+    <h2>Ingresa tu Email</h2>
+    <label for="email">Correo Electrónico</label>
+    <input type="email" id="email" name="email" placeholder="ejemplo@correo.com" required>
+    <button type="submit">Enviar</button>
+  </form>
+</div>
