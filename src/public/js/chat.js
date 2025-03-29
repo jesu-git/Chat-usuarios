@@ -411,13 +411,16 @@ logout.addEventListener("click", (e) => {
   })
     .then(respuesta => respuesta.json())
     .then((data) => {
-
+console.log("fetch",data)
       if (!data) {
 
         notificacion('ERROR, no se pudo cerrar session!', 'success')
 
       }
+      if (data == "Token expirado") {
 
+        window.location.href = "http://localhost:3000?error=Seccion expirada"
+      }
       if (data == "Session cerrada") {
 
         window.location.href = "http://localhost:3000"

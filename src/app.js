@@ -15,6 +15,9 @@ import cors from "cors"
 import { modelUser } from './models/users.js'
 import { conversacionModel } from './models/conversaciones.js'
 import { router as passwordRouter } from './routers/password.router.js'
+import jwt from 'jsonwebtoken'
+import { cambioStatus } from './middelware/checkToken.js'
+
 
 
 
@@ -35,8 +38,10 @@ app.use(cookieParser())
 
 app.use(express.static(__dirname + '/public'))
 
+
 app.use(passport.initialize())
 initPassport()
+
 
 
 app.get("/", (req, res) => {
@@ -50,10 +55,11 @@ app.get("/", (req, res) => {
   res.status(200).render("login", { titulo: "Login", login, noNav, error, mensaje })
 
 })
-app.get("/chat", passport.authenticate("JWT", { failureRedirect: "/?error=Session expirada", session: false }), async (req, res) => {
+app.get("/chat", cambioStatus, passport.authenticate("JWT", { failureRedirect: "/?error=Session expirada", session: false }), async (req, res) => {
 
   const chat = true
-  let user = req.user._doc
+  let user = req.user
+  console.log("desde chat", user)
   let userSolicitudes = await modelUser.findOne({ _id: user._id }).populate({ path: "solicitudes" }).populate({ path: "solicitudes.usuario_solicitante", select: "email" }).lean()
   let solicitudes = userSolicitudes.solicitudes
   let solicitudPendientes = solicitudes.filter(x => x.estado == "pendiente")
@@ -68,7 +74,7 @@ app.get("/chat", passport.authenticate("JWT", { failureRedirect: "/?error=Sessio
 })
 app.get("/user", passport.authenticate("JWT", { failureRedirect: "/?error=Falla en proceso de identificacion", session: false }), (req, res) => {
 
-  const user = req.user._doc
+  const user = req.user
 
   return res.status(200).json(user)
 })
@@ -127,7 +133,7 @@ io.on("connection", (socket) => {
     io.to(usuarios[parseInt(datos.code)]).emit("nuevoMensaje", datos);
   });
   socket.on("solicitud", (datosSolictud) => {
-    
+
     socket.to(usuarios[datosSolictud.receptor.code]).emit("mostrarSolicitud", { solicitante: datosSolictud.solicitante, idSolicitud: datosSolictud.idSolicitud })
 
   })
@@ -159,6 +165,6 @@ io.on("connection", (socket) => {
 
     }
 
-
+        res.clearCookie("user")
   });
 });

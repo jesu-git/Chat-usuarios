@@ -5,20 +5,24 @@ import { createHash, verificador } from "../utils/hash.js";
 import passportJWT from "passport-jwt"
 import jwt from "jsonwebtoken"
 import { config } from "./config.js";
+import { error } from "console";
+
 
 const tkExtractor = (req) => {
 
+
+    console.log("comienza")
     let token = null
+    
+    if (!req.cookies.user) {
 
-    if (req.cookies.user) {
-
-        token = req.cookies.user
-        const checkToken = jwt.verify(token, config.keySecret)
-        if (checkToken) return token
-
+        return token
     }
-
+    token = req.cookies.user
     return token
+
+
+
 }
 
 export const initPassport = () => {
@@ -33,12 +37,12 @@ export const initPassport = () => {
 
             const { nombre, apellido, email } = req.body
 
-            const checkEmail = /^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-            if (email == "" || password == "" || nombre == "") return done(null, false, { mensaje: "ERROR, faltante de datos requeridos" })
-            if (!checkEmail.test(username)) return done(null, false, { mensaje: "ERROR, el email no tiene la estructura aceptada" })
+            if (!email || !password || !apellido || !nombre) return done(null, false, { mensaje: "ERROR, faltante de datos requeridos" })
+            if (!emailRegex.test(email)) return done(null, false, { mensaje: "ERROR, el email no tiene la estructura aceptada" })
 
-            const queryEmail = await modelUser.findOne({ email: username })
+            const queryEmail = await modelUser.findOne({ email })
             if (queryEmail) return done(null, false, { mensaje: "El email ya esta asociado a una cuenta" })
 
             const passwordhash = createHash(password)
@@ -82,45 +86,47 @@ export const initPassport = () => {
 
             async (req, username, password, done) => {
 
-                if (password == "" || username == "") return done(null, false)
+                if (!password || !username) return done(null, false, { mensaje: "ERROR: Email y contraseña son obligatorios" })
 
                 const checkEmail = await modelUser.findOne({ email: username })
 
-                if (!checkEmail || checkEmail == undefined) return done(null, false)
+                if (!checkEmail || checkEmail == undefined) return done(null, false, { mensaje: "Error: El usuario no existe" })
 
                 const checkPassword = await verificador(password, checkEmail.password)
 
-                if (!checkPassword) return done(null, false)
+                if (!checkPassword) return done(null, false, { mensaje: "Error: El usuario o contraseña son incorrectos" })
 
                 delete checkEmail.password
                 checkEmail.status = "En linea"
+                
                 done(null, checkEmail)
 
             }))
     passport.use("JWT", new passportJWT.Strategy({
 
         secretOrKey: config.keySecret,
-        jwtFromRequest: passportJWT.ExtractJwt.fromExtractors([tkExtractor])
+        jwtFromRequest: passportJWT.ExtractJwt.fromExtractors([tkExtractor]),
+
 
     },
 
         async (contentToken, done) => {
 
-            delete contentToken._doc.password
-            let userToken = contentToken._doc.id
+            
             try {
+                if (!contentToken) return done(null, false, { mensaje: "Token invalido" })
+                if (!"exp" in contentToken) return done(null, false, { mensaje: "Fallo con exp" })
+                if (contentToken.exp * 1000 < Date.now()) return done(new error('token expirado'), false)
                 
-                if (contentToken != null) {
-
-                    return done(null, contentToken)
-                }
+                let contenido = contentToken._doc
+                if (!contenido) return done(null, false, { mensaje: 'Usuario no encontrado' })
+                delete contenido.password
                 
-                
+                return done(null, contenido)
 
             } catch (error) {
 
                 return done(error)
-
             }
         }
 

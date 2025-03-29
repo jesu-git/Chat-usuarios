@@ -10,7 +10,7 @@ export class Tolls {
 
             const { email } = req.body
             console.log("email", email)
-            const user = req.user._doc
+            const user = req.user
             console.log("us", user)
             const usuario = await modelUser.findOne({ _id: user._id })
             const buscar = await modelUser.findOne({ email: email })
@@ -100,7 +100,7 @@ export class Tolls {
 
         try {
 
-            const user = req.user._doc
+            const user = req.user
             const { dato } = req.body
             let conversacion
 
