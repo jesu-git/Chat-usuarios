@@ -3,7 +3,7 @@ import Dotenv from "dotenv"
 
 Dotenv.config({
 
-    override: true,
+    
     path: "./src/.env"
 })
 
