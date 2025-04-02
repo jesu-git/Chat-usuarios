@@ -30,7 +30,9 @@ const usuario_buscado = document.querySelector(".contenido").value
 let user_name
 let id_conversacion
 let contacto_enviar
-let route = process.env.route
+let route = 'https://chat-usuarios-23dg.onrender.com'
+
+
 
 const notificacion = (mensaje, icon) => {
 

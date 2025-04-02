@@ -190,4 +190,9 @@ export class Tolls {
 
         }
     }
+    static async route (req, res) {
+        const route = process.env.route
+
+        res.status(200).json({ route: route })
+    }
 }
