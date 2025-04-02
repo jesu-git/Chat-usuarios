@@ -21,7 +21,7 @@ import { cambioStatus } from './src/middelware/checkToken.js'
 
 
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT
 const app = express()
 
 
@@ -92,7 +92,7 @@ app.use("/api/password", passwordRouter)
   
   })
 
-
+console.log(process.env.link_DB, process.env.name_BD)
 connectionBD(process.env.link_DB, process.env.name_BD)
 
 
