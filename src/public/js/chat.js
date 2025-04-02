@@ -30,6 +30,7 @@ const usuario_buscado = document.querySelector(".contenido").value
 let user_name
 let id_conversacion
 let contacto_enviar
+let route = process.env.route
 
 const notificacion = (mensaje, icon) => {
 
@@ -51,7 +52,7 @@ const notificacion = (mensaje, icon) => {
 }
 
 
-fetch("http://localhost:3000/user", {
+fetch(`${route}/user`, {
   method: "get",
   headers: {
     "content-type": "application/json"
@@ -132,7 +133,7 @@ fetch("http://localhost:3000/user", {
         nombre.innerHTML = `${nombres} ${apellidos}`
         nombreChat.append(nombre)
 
-        fetch("http://localhost:3000/api/tools/checkTalk", {
+        fetch(`${route}/api/tools/checkTalk`, {
 
           method: 'post',
           headers: {
@@ -271,7 +272,7 @@ fetch("http://localhost:3000/user", {
 
         const idSolicitud = this.getAttribute("product-id")
 
-        fetch("http://localhost:3000/api/tools/addContact", {
+        fetch(`${route}/api/tools/addContact`, {
           method: "post",
           headers: {
             "content-type": "application/json"
@@ -405,7 +406,7 @@ buscar.addEventListener("click", (e => {
 }))
 logout.addEventListener("click", (e) => {
 
-  fetch("http://localhost:3000/api/acceso/logout", {
+  fetch(`${route}/api/acceso/logout`, {
     method: "get"
 
   })
@@ -419,11 +420,11 @@ console.log("fetch",data)
       }
       if (data == "Token expirado") {
 
-        window.location.href = "http://localhost:3000?error=Seccion expirada"
+        window.location.href = `${route}?error=Seccion expirada`
       }
       if (data == "Session cerrada") {
 
-        window.location.href = "http://localhost:3000"
+        window.location.href = `${route}` 
       }
     })
 })
@@ -434,7 +435,7 @@ buscador.addEventListener("click", (e) => {
 
   const usuario_buscado = document.querySelector(".contenido").value
   console.log("chcequiando datos--", usuario_buscado)
-  fetch("http://localhost:3000/api/tools/filter", {
+  fetch(`${route}/api/tools/filter`, {
 
     method: "post",
     headers: {
@@ -445,7 +446,7 @@ buscador.addEventListener("click", (e) => {
   })
     .then((resultado) => {
 
-      if (resultado.status == 401) return window.location.href = 'http://localhost:3000/?error= Seccion expirada '
+      if (resultado.status == 401) return window.location.href = `${route}/?error= Seccion expirada.`
       return resultado.json()
     })
 
@@ -503,7 +504,7 @@ buscador.addEventListener("click", (e) => {
         btn.addEventListener("click", (e) => {
 
 
-          fetch("http://localhost:3000/api/tools/createSolicitud", {
+          fetch(`${route}/api/tools/createSolicitud`, {
 
             method: "post",
             headers: {
@@ -553,7 +554,7 @@ botonesAceptar.forEach(boton => {
 
     const idSolicitud = this.getAttribute("product-id")
 
-    fetch("http://localhost:3000/api/tools/addContact", {
+    fetch(`${route}/api/tools/addContact`, {
       method: "post",
       headers: {
         "content-type": "application/json"
@@ -617,7 +618,7 @@ btn_show.forEach((boton) => {
     nombre.innerHTML = `${nombres} ${apellidos}`
     nombreChat.append(nombre)
 
-    fetch("http://localhost:3000/api/tools/checkTalk", {
+    fetch(`${route}/api/tools/checkTalk`, {
 
       method: 'post',
       headers: {
