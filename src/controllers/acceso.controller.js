@@ -37,7 +37,7 @@ export class AccesoController {
         let cambio = true
 
         const { tk } = req.query
-        let usuario = jwt.verify(tk, config.keySecret)
+        let usuario = jwt.verify(tk, process.env.keySecret)
         if (!usuario) return res.redirect("/?error=El link utilizado ha expirado")
 
         return res.status(200).render("formPassword", { titulo: "Cambio contraseña", cambio, noNav, tk })
@@ -50,7 +50,7 @@ export class AccesoController {
         if (!user) return res.redirect("/?error=Problemas en el proceso de login")
         const cambioStatus = await modelUser.findOneAndUpdate({ _id: user._id.valueOf() }, { $set: { status: "En linea" } })
 
-        const tk = jwt.sign({ ...user }, config.keySecret, { expiresIn: "1h" })
+        const tk = jwt.sign({ ...user }, process.env.keySecret, { expiresIn: "1h" })
         res.cookie("user", tk, { httpOnly: true })
 
         return res.redirect("/chat")

@@ -7,8 +7,8 @@ const transport = nodemailer.createTransport({
     port: 587,
     auth: {
 
-        user: 'suarezjesu90@gmail.com',
-        pass: 'ctvg vxfs vpbs hvex'
+        user: process.env.userEmail,
+        pass: process.env.keyEmail
     }
 })
 

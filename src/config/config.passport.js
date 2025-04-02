@@ -104,7 +104,7 @@ export const initPassport = () => {
             }))
     passport.use("JWT", new passportJWT.Strategy({
 
-        secretOrKey: config.keySecret,
+        secretOrKey: process.env.keySecret,
         jwtFromRequest: passportJWT.ExtractJwt.fromExtractors([tkExtractor]),
 
 

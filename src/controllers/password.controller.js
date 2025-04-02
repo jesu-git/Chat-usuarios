@@ -36,7 +36,7 @@ export class PasswordController {
             
         let { password, repeticion , token} = req.body
         
-        let datos = jwt.verify(token, "chat")
+        let datos = jwt.verify(token, process.env.keySecret)
         
         if (!datos) return res.redirect("/api/acceso/login?error=El link utilizado ha expirado")
 
