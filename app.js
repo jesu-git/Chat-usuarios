@@ -14,16 +14,16 @@ import cors from "cors"
 import { modelUser } from './src/models/users.js'
 import { conversacionModel } from './src/models/conversaciones.js'
 import { router as passwordRouter } from './src/routers/password.router.js'
-import jwt from 'jsonwebtoken'
+
 import { cambioStatus } from './src/middelware/checkToken.js'
-import http from 'http'
+
 
 
 
 
 const PORT = config.PORT || 3000
 const app = express()
-const servicio = http.createServer(app)
+
 
 app.use(cors())
 
@@ -83,16 +83,16 @@ app.use("/api/acceso", accesoRouter)
 app.use("/api/tools", toolsRouter)
 app.use("/api/password", passwordRouter)
 
-let server
-if(!process.env.VERCEL){
 
-  let server = app.listen(PORT, () => {
+
+
+ const server = app.listen(PORT, () => {
   
     console.log("Server in service")
   
   })
 
-}
+
 connectionBD(config.link_DB, config.name_BD)
 
 
@@ -100,7 +100,7 @@ connectionBD(config.link_DB, config.name_BD)
 //Servidor oi 
 
 
-const io = new Server(servicio)
+const io = new Server(server)
 let usuarios = [];
 let usuarioInfo = []
 
@@ -170,8 +170,7 @@ io.on("connection", (socket) => {
 
     }
 
-        res.clearCookie("user")
+        
   });
 });
 
-export default servicio
